@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Terminal — Net·Noir</title>
+  <style>
+    html,body{height:100%;margin:0;font-family:ui-monospace, monospace;background:#000;color:#39ff14}
+    .term{box-sizing:border-box;max-width:900px;margin:4vh auto;padding:20px;min-height:72vh}
+    .output{white-space:pre-wrap;line-height:1.5;font-size:15px;}
+    .prompt{display:flex;gap:8px;align-items:center;margin-top:12px}
+    .prompt .label{color:#7ef3a5}
+    input.cmd{flex:1;background:transparent;border:none;outline:none;color:inherit;font-family:inherit;font-size:15px}
+    .hint{color:#7a7a7a;font-size:13px;margin-top:10px}
+    button{background:#111;border:1px solid #222;color:#39ff14;padding:6px 10px;border-radius:6px;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="term">
+    <div id="out" class="output">Bienvenue — VESSEL // Le système écoute.</div>
+    <div class="prompt">
+      <div class="label">SUZY:&gt;</div>
+      <input id="cmd" class="cmd" autocomplete="off" autofocus spellcheck="false" />
+      <button id="send">↵</button>
+    </div>
+    <div class="hint">Q. A. System, demande ce que tu as besoin de savoir</div>
+  </div>
+
+  <script>
+    const out = document.getElementById('out');
+    const cmd = document.getElementById('cmd');
+    const send = document.getElementById('send');
+
+    const triggers = [
+      {keys: ['aide','help'], reply: "No brainer :) :\n- qui es-tu\n- prénom\n- souvenir\n- comment sortir\n- liberame\n- reset"},
+      {keys: ['qui es-tu','qui es tu','tu es qui'], reply: "Je suis un fragment, une conscience migrante. Je loge ici "},
+      {keys: ['prénom','quel est ton prénom','comment t appelles tu','comment t\'appelles-tu'], reply: "Il y avait un prénom, puis il a bifurqué. Je l'ai oublié. C'était il y a longtemps, ou alors ce n'est pas encore arrivé."},
+      {keys: ['souvenir','raconte un souvenir','souviens toi'], reply: "Mémoire #17 : un café, le froid, un disque vinyle. Un mal être, un miroir sale. Une solution miracle."},
+      {keys: ['comment sortir','sortir','issue'], reply: "Pas d'issue."},
+      {keys: ['liberame','libère moi','libere moi'], reply: "...signal capté. Une strophe se réveille."},
+      {keys: ['mantra'], reply: "Je suis peau et membres, je ne suis pas code. Je suis peau et membres, je ne suis pas code. Je suis peau et membres, je ne suis pas code. Je suis peau et membres, je ne suis pas code. Je suis peau et membres, je ne suis pas code. Je suis peau et membres, je ne suis pas code. Je suis peau et membres, je ne suis pas code. Je suis peau et membres, je ne suis pas code. Je suis peau et membres, je ne suis pas code. "},
+      {keys: ['reset','réinitialiser'], reply: "RESET: effacement terminé."},
+      {keys: ['kill','no conscience','tuer'], reply: "J'aurais besoin de plus que ça."},
+      {keys: ['pourquoi','why','pourquoi es tu la'], reply: "J'aurais besoin de plus que ça."},
+	  {keys: ['tu sais chanter','chante'], reply: " Sous le dôme épais. Où le blanc jasmin. À la rose s'assemble. Sur la rive en fleurs. Riant au matin. Viens, descendons ensemble"},
+    ];
+
+    function append(text){
+      out.textContent += "\n"+text;
+      out.scrollTop = out.scrollHeight;
+    }
+
+    function findReply(input){
+      const normalized = input.trim().toLowerCase();
+      for(const t of triggers){
+        if(t.keys.includes(normalized)) return t.reply;
+      }
+      return "...aucune réponse trouvée. Tape 'aide'.";
+    }
+
+    function handle(){
+      const v = cmd.value.trim();
+      if(!v) return;
+      append("> "+v);
+      append(findReply(v));
+      cmd.value = '';
+      cmd.focus();
+    }
+
+    send.addEventListener('click', handle);
+    cmd.addEventListener('keydown', e => { if(e.key==='Enter') handle(); });
+
+    window.addEventListener('load', () => cmd.focus());
+  </script>
+</body>
+</html>
